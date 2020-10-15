@@ -1,0 +1,6 @@
+# my.cnf
+[client]
+database = quote_test
+user = quote
+password = quote
+default-character-set = utf8

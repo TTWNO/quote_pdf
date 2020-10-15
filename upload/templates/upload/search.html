@@ -1,0 +1,10 @@
+{% extends 'common/master.html' %}
+{% load static %}
+{% block body %}
+<h1>Search Addresses</h1>
+<input type="text" id="addr" placeholder="Address">
+<ul id="addrs">
+    
+</ul>
+<script src="{% static "upload/js/search_addresses.js" %}"></script>
+{% endblock %}
