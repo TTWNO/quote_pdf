@@ -2,6 +2,6 @@
 {% block body %}
   <h1>Download Your Quote</h1>
   {% for thing in things %}
-    <p><a href="./d/{{ thing.id }}">{{ thing.address.address }}</a></p>
+    <p><a href="./d/{{ thing.id }}">{{ thing.address_string }}</a></p>
   {% endfor %}
 {% endblock %}

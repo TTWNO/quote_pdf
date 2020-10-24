@@ -37,34 +37,30 @@ def search_api(request, address):
 def upload(request):
     if request.method == 'POST':
         upload_form = PDFForm(request.POST, request.FILES)
-        print(upload_form.data)
-        print(request.FILES)
-        print(upload_form.is_valid())
-        print(upload_form.cleaned_data)
-        address = upload_form.cleaned_data['address_string']
-        code = 'XYZ'
-        name = 'quote_'+code+'.pdf'
-        pdf_file = upload_form.cleaned_data['upload_file']
-        addr = c.get('uwj2-d2wc',
-                    where='address = "{0}"'.format(address),
-                    limit=1)[0]
-
-        # Save address
-        addr = CalgaryAddress.objects.create(
-            address=addr['address'],
-            house_alpha=addr['house_alpha'] if 'house_alpha' in addr else '',
-            street_quad=addr['street_quad'],
-            street_name=addr['street_name'],
-            street_type=addr['street_type']
-        )
-        pdf = PDF.objects.create(
-                path=name,
-                address=addr,
-                code=code,
-                upload_file=pdf_file
-        )
-        pdf.save()
-        return HttpResponse("File saved")
+        files = request.FILES.getlist('files')
+        if upload_form.is_valid():
+            for pdf_file in files:
+                print(pdf_file)
+                filename = pdf_file.name
+                code = filename.split(".")[0].split(" ")[-1]
+                address = ' '.join(filename.split(" ")[:-1])
+                name = 'quote_'+code+'.pdf'
+                possible_match = PDF.objects.filter(address_string=address)
+                # if address already entered
+                if len(possible_match) > 0:
+                    # update file
+                    possible_match[0].upload_file = pdf_file
+                    possible_match[0].save()
+                else: 
+                    # Save new address
+                    pdf = PDF.objects.create(
+                            path=name,
+                            address_string=address,
+                            code=code,
+                            upload_file=pdf_file
+                    )
+                    pdf.save()
+            return HttpResponse("File(s) saved") # TODO: "x Files Saved"
     elif request.method == "GET":
         return render(request, 'upload/upload.html', {
             'form': PDFForm()

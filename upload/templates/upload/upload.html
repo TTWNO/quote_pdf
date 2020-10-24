@@ -4,11 +4,7 @@
 <h1>Upload</h1>
 <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <label for="{{ form.address_string.id_for_label }}">Address:</label>
-    {{ form.address_string }}
-    <ul id="addr_list"></ul>
-    <label for="{{ form.upload_file.id_for_label }}">File:</label>
-    {{ form.upload_file }}
+    <input type="file" multiple name="files">
     <input type="submit" value="Submit">
 </form>
 <script>
