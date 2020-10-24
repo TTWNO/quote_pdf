@@ -1,6 +1,6 @@
 from sodapy import Socrata
 from core.models import CalgaryAddress
-from download.models import PDF
+from download.models import PDF, Address
 from django.shortcuts import render, HttpResponse
 import json
 from .forms import PDFForm
@@ -43,22 +43,33 @@ def upload(request):
                 print(pdf_file)
                 filename = pdf_file.name
                 code = filename.split(".")[0].split(" ")[-1]
+                city = filename.split(".")[0].split(" ")[-2]
                 address = ' '.join(filename.split(" ")[:-1])
                 name = 'quote_'+code+'.pdf'
-                possible_match = PDF.objects.filter(address_string=address)
+                possible_match = Address.objects.filter(address=address)
                 # if address already entered
                 if len(possible_match) > 0:
-                    # update file
-                    possible_match[0].upload_file = pdf_file
-                    possible_match[0].save()
+                    pdf = PDF.objects.create(
+                        path=name,
+                        code=code,
+                        upload_file=pdf_file,
+                        address=possible_match[0]
+                    )
+                    pdf.save()
                 else: 
                     # Save new address
+                    addr = Address.objects.create(
+                        address=address,
+                        city=city
+                    )
+                    # code is currently changable per file
                     pdf = PDF.objects.create(
                             path=name,
-                            address_string=address,
                             code=code,
-                            upload_file=pdf_file
+                            upload_file=pdf_file,
+                            address=addr
                     )
+                    addr.save()
                     pdf.save()
             return HttpResponse("File(s) saved") # TODO: "x Files Saved"
     elif request.method == "GET":
