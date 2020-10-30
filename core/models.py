@@ -1,5 +1,6 @@
 import json
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class CalgaryAddress(models.Model):
@@ -13,3 +14,6 @@ class CalgaryAddress(models.Model):
         return {
             'address': self.address
         }
+
+class QuoteUser(User):
+    pass
