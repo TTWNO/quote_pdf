@@ -134,3 +134,5 @@ STATIC_URL = '/static/'
 # Make default max file size bigger
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024*50
 
+LOGIN_REDIRECT_URL = '/upload'
+LOGOUT_REDIRECT_URL = '/'
