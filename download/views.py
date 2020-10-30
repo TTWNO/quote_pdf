@@ -1,13 +1,21 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse 
 from django.http import FileResponse
 from .models import Address, PDF
 from .forms import CodeForm
+import json
 
 # Create your views here.
 def starter(request):
     return render(request, 'download/download-page.html', {
         'things': list(Address.objects.all())
     })
+
+def search(request, addr):
+    if len(addr) <= 3:
+        return HttpResponse(json.dumps([]))
+    return HttpResponse(json.dumps(
+        [x.toDict() for x in Address.objects.filter(address__startswith=addr)]
+    ))
 
 def download(request, pdfid):
     if request.method == 'POST':

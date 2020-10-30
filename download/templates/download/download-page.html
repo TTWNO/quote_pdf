@@ -1,7 +1,29 @@
 {% extends 'common/master.html' %}
 {% block body %}
   <h1>Download Your Quote</h1>
-  {% for thing in things %}
-    <p><a href="./d/{{ thing.id }}">{{ thing.address }}</a></p>
-  {% endfor %}
+  <label for="addr">Address</label>
+  <input id="addr" type="text">
+  <ul id="addrlist"></ul>
+  <script>
+    const ADDR_BOX = document.getElementById('addr');
+    const SEARCH_URL = '/download/search/';
+    const ADDR_LIST = document.getElementById('addrlist');
+    ADDR_BOX.oninput = async (e) => {
+      const ADDR_INPUT = e.target.value;
+      console.log(e.target.value);
+
+      let response = await fetch(SEARCH_URL + ADDR_INPUT);
+      let addresses = await response.json();
+      console.log(addresses);
+      ADDR_LIST.innerHTML = '';
+      for (address of addresses) {
+        let li = document.createElement('li');
+        let alink = document.createElement('a');
+        alink.href = '/download/d/' + address.id;
+        alink.innerText = address.address;
+        li.appendChild(alink);
+        ADDR_LIST.appendChild(li);
+      }
+    }
+  </script>
 {% endblock %}

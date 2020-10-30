@@ -2,8 +2,17 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      nav {
+        background-color: lightgrey;
+      }
+      a { padding: 12px; display: block; border: 1px solid black; }
+      nav > a { display: inline-block; }
+    </style>
   </head>
   <body>
+    {% include 'common/navbar.html' %}
     {% block body %}
     {% endblock %}
   </body>

@@ -7,6 +7,11 @@ class Address(models.Model):
     address = models.CharField(max_length=128)
     # TODO: add validation columns in relation to city
     city = models.CharField(max_length=32)
+    def toDict(self):
+        return {
+            'address': self.address,
+            'id': self.id
+        }
 
 class PDF(models.Model):
     path = models.CharField(max_length=64)
