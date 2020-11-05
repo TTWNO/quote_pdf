@@ -49,7 +49,8 @@ def download(request, pdfid):
     else:
         form = CodeForm()
         return render(request, 'download/code-form.html', {
-            'form': form
+            'form': form,
+            'id': pdfid
         })
 
 def download_preload(request, pdfid):
