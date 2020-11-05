@@ -1,0 +1,10 @@
+{% extends 'common/master.html' %}
+{% block body %}
+    <h1>Email has not been sent.</h1>
+    <form action="{% url 'download_f_plus' id %}" method="POST">
+        {% csrf_token %}
+        <input hidden name="email" value="{{ email }}">
+        <input hidden name="code" value="{{ code }}">
+        <input type="submit" value="Try Again">
+    </form>
+{% endblock %}

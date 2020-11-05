@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse 
 from django.http import FileResponse
+from django.core.mail import EmailMessage
 from .models import Address, PDF
 from .forms import CodeForm
 import json
@@ -30,9 +31,33 @@ def download(request, pdfid):
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
             pdf = pdf[0]
-            return FileResponse(pdf.upload_file, as_attachment=True)
+            email = EmailMessage()
+            email.subject = 'Your Free Quote!'
+            email.to = [form.cleaned_data['email']]
+            email.body = 'Your free quote is attached to this email. This quote is valid for 30 days.'
+            try:
+                f = open(str(pdf.upload_file), 'rb')
+                content = f.read()
+                email.attach(str(pdf.upload_file), content, 'application/octate-stream')
+                email.send()
+            except:
+                return render(request, 'download/email-not-sent.html', {
+                    'id': pdfid,
+                    'code': form.cleaned_data['code']
+                })
+            return render(request, 'download/email-confirm.html')
     else:
         form = CodeForm()
         return render(request, 'download/code-form.html', {
             'form': form
+        })
+
+def download_preload(request, pdfid):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        email = request.POST.get('email')
+        form = CodeForm(initial={'code': code, 'email': email})
+        return render(request, 'download/code-form.html', {
+            'form': form,
+            'id': pdfid,
         })
