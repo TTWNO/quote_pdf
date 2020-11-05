@@ -136,3 +136,8 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024*50
 
 LOGIN_REDIRECT_URL = '/upload'
 LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'sent_emails'
+
+DEFAULT_FROM_EMAIL = 'Test <code@tait.tech>'
