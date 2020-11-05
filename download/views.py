@@ -32,11 +32,14 @@ def download(request, pdfid):
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
             pdf = pdf[0]
-            # save email in database
-            user = QuoteUser.objects.create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
-            # disallow login for user
-            user.set_unusable_password()
-            user.save()
+            # save email in database; do nothing if exception
+            try:
+                user = QuoteUser.objects.create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
+                # disallow login for user
+                user.set_unusable_password()
+                user.save()
+            except:
+                pass
             # send email
             email = EmailMessage()
             email.subject = 'Your Free Quote!'
