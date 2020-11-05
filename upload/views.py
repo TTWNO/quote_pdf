@@ -35,6 +35,7 @@ def search_api(request, address):
                   limit=5)
     return HttpResponse(json.dumps(addrs))
 
+# TODO: Fix auth: use Permission
 def upload(request):
     if request.user.is_authenticated:
         if request.method == 'POST':

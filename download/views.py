@@ -3,6 +3,7 @@ from django.http import FileResponse
 from django.core.mail import EmailMessage
 from .models import Address, PDF
 from .forms import CodeForm
+from core.models import QuoteUser
 import json
 
 # Create your views here.
@@ -31,6 +32,12 @@ def download(request, pdfid):
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
             pdf = pdf[0]
+            # save email in database
+            user = QuoteUser.objects.create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
+            # disallow login for user
+            user.set_unusable_password()
+            user.save()
+            # send email
             email = EmailMessage()
             email.subject = 'Your Free Quote!'
             email.to = [form.cleaned_data['email']]
