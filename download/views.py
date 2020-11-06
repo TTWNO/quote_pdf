@@ -1,10 +1,13 @@
-from django.shortcuts import render, HttpResponse 
+from django.shortcuts import render, HttpResponse
 from django.http import FileResponse
-from django.core.mail import EmailMessage
-from .models import Address, PDF
+from django.core.mail import EmailMultiAlternatives
+from .models import Address, PDF, EmailSent
 from .forms import CodeForm
 from core.models import QuoteUser
+from django.template.loader import render_to_string
 import json
+import datetime
+import hashlib
 
 # Create your views here.
 def starter(request):
@@ -19,6 +22,35 @@ def search(request, addr):
         [x.toDict() for x in Address.objects.filter(address__startswith=addr)]
     ))
 
+def send_email(to, addr, pdf, dt_date):
+    # save email in user database; do nothing if exception
+    user, created = QuoteUser.objects.get_or_create(username=to, email=to)
+    # disallow login for new user
+    if created:
+        user.set_unusable_password()
+        user.save()
+    # send email
+    email = EmailMultiAlternatives()
+    email.subject = 'Your free quote!'
+    email.to = [to]
+    context = {
+        'address': addr.address,
+        'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S")
+    }
+    email.body = render_to_string('download/email/quote.txt', context)
+    email.attach_alternative(render_to_string('download/email/quote.html', context), 'text/html')
+    with open(str(pdf.upload_file), 'rb') as f:
+        content = f.read()
+        email.attach(str(pdf.upload_file), content, 'application/octate-stream')
+    email.send()
+
+def save_email(to, addr, pdf, dt):
+    EmailSent.objects.create(
+        user=QuoteUser.objects.get(email=to),
+        pdf=pdf,
+        ref_code=hashlib.sha256(dt.strftime("%Y%m%d%H%M%S").encode()).hexdigest()
+    )
+
 def download(request, pdfid):
     if request.method == 'POST':
         form = CodeForm(request.POST)
@@ -32,27 +64,17 @@ def download(request, pdfid):
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
             pdf = pdf[0]
-            # save email in database; do nothing if exception
-            user, created = QuoteUser.objects.get_or_create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
-            # disallow login for new user
-            if created:
-                user.set_unusable_password()
-                user.save()
-            # send email
-            email = EmailMessage()
-            email.subject = 'Your Free Quote!'
-            email.to = [form.cleaned_data['email']]
-            email.body = 'Your free quote is attached to this email. This quote is valid for 30 days.'
+            # create timestamps
+            dt_date = datetime.datetime.now()
             try:
-                f = open(str(pdf.upload_file), 'rb')
-                content = f.read()
-                email.attach(str(pdf.upload_file), content, 'application/octate-stream')
-                email.send()
+                send_email(form.cleaned_data['email'], addr, pdf, dt_date)
             except:
                 return render(request, 'download/email-not-sent.html', {
                     'id': pdfid,
                     'code': form.cleaned_data['code']
                 })
+            # only saves email if it sent
+            save_email(form.cleaned_data['email'], addr, pdf, dt_date)
             return render(request, 'download/email-confirm.html')
     else:
         form = CodeForm()
