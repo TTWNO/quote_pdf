@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'core',
     'download',
     'upload',
+    'request',
+    'viewrequests',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,10 +136,13 @@ STATIC_URL = '/static/'
 # Make default max file size bigger
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024*50
 
-LOGIN_REDIRECT_URL = '/upload'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'sent_emails'
 
 DEFAULT_FROM_EMAIL = 'Test <code@tait.tech>'
+
+REQUEST_BBC = 'Test <spam+bahnrequest@tait.tech>'
+DOWNLOAD_EMAIL = ''
