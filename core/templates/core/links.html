@@ -2,8 +2,7 @@
 {% block body %}
     {% if user.is_authenticated %}
         <a href="{% url 'upload' %}">Upload</a>
-        <a href="{% url 'requests_view' %}">View Requests</a>
+        <a href="{% url 'requests_view' %}">View Downloads</a>
     {% endif %}
     <a href="{% url 'download' %}">Download</a>
-    <a href="{% url 'request' %}">Request</a>
 {% endblock %}
