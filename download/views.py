@@ -68,7 +68,7 @@ def download(request, pdfid):
             dla = DownloadAttempt.objects.create(
                 user=user,
                 pdf=pdf,
-                ip=request.META.get('REMOTE_ADDR'),
+                ip=request.ipinfo.ip,
                 geolocation="{0}, {1}, {2}".format(
                     request.ipinfo.city,
                     request.ipinfo.region,
