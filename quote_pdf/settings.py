@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'core',
     'download',
     'upload',
-    'request',
     'viewdownloads',
     'django.contrib.admin',
     'django.contrib.auth',
