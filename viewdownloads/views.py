@@ -1,12 +1,9 @@
 from django.shortcuts import render, HttpResponse
-from request.models import QuoteRequest
+from download.models import DownloadAttempt
 
 # Create your views here.
 def index(request):
+    # TODO: Allow search
     return render(request, 'viewrequests/requests.html', {
-        'requests': QuoteRequest.objects.all()
+        'requests': DownloadAttempt.objects.all().order_by('-timestamp')[:100]
     })
-
-def delete(request):
-    print(request.POST)
-    pass

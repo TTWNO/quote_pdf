@@ -26,3 +26,11 @@ class EmailSent(models.Model):
     user = models.ForeignKey(QuoteUser, on_delete=models.CASCADE)
     pdf = models.ForeignKey(PDF, on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=256)
+
+class DownloadAttempt(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=False, blank=False)
+    user = models.ForeignKey(QuoteUser, on_delete=models.CASCADE, related_name='attempts')
+    successful = models.BooleanField(default=False)
+    pdf = models.ForeignKey(PDF, on_delete=models.CASCADE, related_name='attempts')
+    ip = models.GenericIPAddressField()
+    geolocation = models.CharField(max_length=64)

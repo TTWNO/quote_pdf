@@ -1,0 +1,32 @@
+{% extends 'common/master.html' %}
+{% block body %}
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    td {
+        padding: 20px;
+        border: 1px solid black;
+        margin: 0px;
+    }
+</style>
+<h1>View Download Attempts</h1>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>Address</th>
+        <th>IP</th>
+        <th>Geolocation</th>
+        <th>Timestamp</th>
+    </tr>
+    {% for req in requests %}
+    <tr>
+        <td>{{ req.user.email }}</td>
+        <td>{{ req.pdf.address.address }}</td>
+        <td>{{ req.ip }}</td>
+        <td>{{ req.geolocation }}</td>
+        <td>{{ req.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

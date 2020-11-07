@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.http import FileResponse
 from django.core.mail import EmailMultiAlternatives
-from .models import Address, PDF, EmailSent
+from .models import Address, PDF, EmailSent, DownloadAttempt
 from .forms import CodeForm
 from core.models import QuoteUser
 from django.template.loader import render_to_string
@@ -19,16 +19,10 @@ def search(request, addr):
     if len(addr) <= 3:
         return HttpResponse(json.dumps([]))
     return HttpResponse(json.dumps(
-        [x.toDict() for x in Address.objects.filter(address__startswith=addr)]
+        [x.toDict() for x in Address.objects.filter(address__contains=addr)[:10]]
     ))
 
 def send_email(to, addr, pdf, dt_date):
-    # save email in user database; do nothing if exception
-    user, created = QuoteUser.objects.get_or_create(username=to, email=to)
-    # disallow login for new user
-    if created:
-        user.set_unusable_password()
-        user.save()
     # send email
     email = EmailMultiAlternatives()
     email.subject = 'Your free quote!'
@@ -44,9 +38,9 @@ def send_email(to, addr, pdf, dt_date):
         email.attach(str(pdf.upload_file), content, 'application/octate-stream')
     email.send()
 
-def save_email(to, addr, pdf, dt):
+def save_email(user, addr, pdf, dt):
     EmailSent.objects.create(
-        user=QuoteUser.objects.get(email=to),
+        user=user,
         pdf=pdf,
         ref_code=hashlib.sha256(dt.strftime("%Y%m%d%H%M%S").encode()).hexdigest()
     )
@@ -64,6 +58,23 @@ def download(request, pdfid):
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
             pdf = pdf[0]
+            # create user
+            user, created = QuoteUser.objects.get_or_create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
+            # disallow login for new user
+            if created:
+                user.set_unusable_password()
+                user.save()
+            # create download attempt
+            dla = DownloadAttempt.objects.create(
+                user=user,
+                pdf=pdf,
+                ip=request.META.get('REMOTE_ADDR'),
+                geolocation="{0}, {1}, {2}".format(
+                    request.ipinfo.city,
+                    request.ipinfo.region,
+                    request.ipinfo.country
+                )
+            )
             # create timestamps
             dt_date = datetime.datetime.now()
             try:
@@ -74,7 +85,10 @@ def download(request, pdfid):
                     'code': form.cleaned_data['code']
                 })
             # only saves email if it sent
-            save_email(form.cleaned_data['email'], addr, pdf, dt_date)
+            save_email(user, addr, pdf, dt_date)
+            # only makes successful if email is sent
+            dla.successful = True
+            dla.save()
             return render(request, 'download/email-confirm.html')
     else:
         form = CodeForm()
