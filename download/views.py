@@ -5,6 +5,7 @@ from .models import Address, PDF, EmailSent, DownloadAttempt
 from .forms import CodeForm
 from core.models import QuoteUser
 from django.template.loader import render_to_string
+from django.conf import settings
 import ipinfo
 import json
 import datetime
@@ -23,7 +24,14 @@ def get_client_ip(request):
 
 def get_client_ip_info(request):
     realip = get_client_ip(request)
-    return IPINFO_HANDLER.getDetails(realip)
+    handler = ipinfo.getHandler()
+    details = handler.getDetails(realip)
+    # needed for testing
+    if settings.DEBUG and (details.ip == '127.0.0.1' or details.ip == '::1'):
+        details.city = 'Local'
+        details.region = 'Local'
+        details.country = 'Local'
+    return details
 
 # Create your views here.
 def starter(request):
@@ -61,31 +69,27 @@ def save_email(user, addr, pdf, dt):
         ref_code=hashlib.sha256(dt.strftime("%Y%m%d%H%M%S").encode()).hexdigest()
     )
 
-def download(request, pdfid):
+def download(request, addrid):
     if request.method == 'POST':
         form = CodeForm(request.POST)
         if form.is_valid():
-            addr = Address.objects.filter(id=pdfid)
+            # get addr by id
+            addr = Address.objects.filter(id=addrid)
             if len(addr) == 0:
                 return render(request, 'common/not-found.html')
+            # only get first addr
             addr = addr[0]
-            # TODO: If same address + different code, the old file is still visible if the old code is still known
-            pdf = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
-            if len(pdf) == 0:
-                return render(request, 'common/password-incorrect.html')
-            pdf = pdf[0]
-            # create user
             user, created = QuoteUser.objects.get_or_create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
-            # disallow login for new user
+            # disallow login for new users
             if created:
                 user.set_unusable_password()
                 user.save()
-            # TODO: fail gracefuly
+            # TODO: fail gracefully
             ip = get_client_ip_info(request)
             # create download attempt
             dla = DownloadAttempt.objects.create(
                 user=user,
-                pdf=pdf,
+                pdf=PDF.objects.filter(address=addr).order_by('-upload_date')[0],
                 ip=ip.ip,
                 geolocation="{0}, {1}, {2}".format(
                     ip.city,
@@ -93,34 +97,41 @@ def download(request, pdfid):
                     ip.country
                 )
             )
+            # TODO: If same address + different code, the old file is still visible if the old code is still known
+            pdf = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
+            if len(pdf) == 0:
+                return render(request, 'common/password-incorrect.html')
+            pdf = pdf[0]
+            dla.code_correct = True
+            dla.save()
             # create timestamps
             dt_date = datetime.datetime.now()
             try:
                 send_email(form.cleaned_data['email'], addr, pdf, dt_date)
             except:
                 return render(request, 'download/email-not-sent.html', {
-                    'id': pdfid,
+                    'id': addrid,
                     'code': form.cleaned_data['code']
                 })
             # only saves email if it sent
             save_email(user, addr, pdf, dt_date)
             # only makes successful if email is sent
-            dla.successful = True
+            dla.email_sent = True
             dla.save()
             return render(request, 'download/email-confirm.html')
     else:
         form = CodeForm()
         return render(request, 'download/code-form.html', {
             'form': form,
-            'id': pdfid
+            'id': addrid
         })
 
-def download_preload(request, pdfid):
+def download_preload(request, addid):
     if request.method == 'POST':
         code = request.POST.get('code')
         email = request.POST.get('email')
         form = CodeForm(initial={'code': code, 'email': email})
         return render(request, 'download/code-form.html', {
             'form': form,
-            'id': pdfid,
+            'id': addrid,
         })

@@ -30,7 +30,8 @@ class EmailSent(models.Model):
 class DownloadAttempt(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=False, blank=False)
     user = models.ForeignKey(QuoteUser, on_delete=models.CASCADE, related_name='attempts')
-    successful = models.BooleanField(default=False)
+    email_sent = models.BooleanField(default=False)
+    code_correct = models.BooleanField(default=False)
     pdf = models.ForeignKey(PDF, on_delete=models.CASCADE, related_name='attempts')
     ip = models.GenericIPAddressField()
     geolocation = models.CharField(max_length=64)

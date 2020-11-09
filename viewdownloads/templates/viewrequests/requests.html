@@ -18,6 +18,8 @@
         <th>IP</th>
         <th>Geolocation</th>
         <th>Timestamp</th>
+        <th>Valid Code</th>
+        <th>Email Sent</th>
     </tr>
     {% for req in requests %}
     <tr>
@@ -26,6 +28,8 @@
         <td>{{ req.ip }}</td>
         <td>{{ req.geolocation }}</td>
         <td>{{ req.timestamp }}</td>
+        <td>{{ req.code_correct }}</td>
+        <td>{{ req.email_sent }}</td>
     </tr>
     {% endfor %}
 </table>
