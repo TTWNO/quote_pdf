@@ -5,9 +5,25 @@ from .models import Address, PDF, EmailSent, DownloadAttempt
 from .forms import CodeForm
 from core.models import QuoteUser
 from django.template.loader import render_to_string
+import ipinfo
 import json
 import datetime
 import hashlib
+
+IPINFO_HANDLER = ipinfo.getHandler()
+
+# https://stackoverflow.com/a/4581997
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def get_client_ip_info(request):
+    realip = get_client_ip(request)
+    return IPINFO_HANDLER.getDetails(realip)
 
 # Create your views here.
 def starter(request):
@@ -64,15 +80,17 @@ def download(request, pdfid):
             if created:
                 user.set_unusable_password()
                 user.save()
+            # TODO: fail gracefuly
+            ip = get_client_ip_info(request)
             # create download attempt
             dla = DownloadAttempt.objects.create(
                 user=user,
                 pdf=pdf,
-                ip=request.ipinfo.ip,
+                ip=ip.ip,
                 geolocation="{0}, {1}, {2}".format(
-                    request.ipinfo.city,
-                    request.ipinfo.region,
-                    request.ipinfo.country
+                    ip.city,
+                    ip.region,
+                    ip.country
                 )
             )
             # create timestamps
