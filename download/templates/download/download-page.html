@@ -1,8 +1,8 @@
 {% extends 'common/master.html' %}
 {% block body %}
   <h1>Download Your Quote</h1>
-  <label for="addr">Address</label>
-  <input id="addr" type="text">
+  <label for="addr" hidden>Search</label>
+  <input id="addr" type="text" placeholder="123 Main St.">
   <ul id="addrlist"></ul>
   <script>
     const ADDR_BOX = document.getElementById('addr');

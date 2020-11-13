@@ -1,0 +1,41 @@
+body {
+    background-color: #f2f2f2;
+}
+h1, h2, h3, h4, h5, h6 {
+    text-transform: capitalize;
+    line-height: initial;
+}
+#wrapper {
+    width: 80%;
+    margin: auto;
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1.5em;
+}
+.two-col-grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 50% 50%;
+}
+.two-col-grid > * {
+    text-align: center;
+}
+
+nav {
+    background-color: lightgrey;
+}
+a {
+    color: #47a;
+    padding: 12px;
+    display: block;
+}
+a:visited {
+    color: #941452;
+}
+nav > a {
+    display: inline-block;
+}
+
+input {
+    font-size: 32px;
+}
