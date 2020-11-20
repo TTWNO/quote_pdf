@@ -29,12 +29,6 @@ def sanitize_address(addr):
         new_addr = new_addr.replace(' ' + k, ' ' + v)
     return new_addr
 
-def search_api(request, address):
-    addrs = c.get('uwj2-d2wc',
-                  where='address like "%{0}%"'.format(sanitize_address(address)),
-                  limit=5)
-    return HttpResponse(json.dumps(addrs))
-
 # TODO: Fix auth: use Permission
 def upload(request):
     if request.user.is_authenticated:
