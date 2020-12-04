@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.http import FileResponse
 from django.core.mail import EmailMultiAlternatives
-from .models import Address, PDF, EmailSent, DownloadAttempt
+from .models import Address, PDF, EmailSent, DownloadAttempt, CCEmail, BCCEmail
 from .forms import CodeForm
 from core.models import QuoteUser
 from django.template.loader import render_to_string
@@ -13,6 +13,12 @@ import hashlib
 import os
 
 IPINFO_HANDLER = ipinfo.getHandler()
+
+def get_cc_emails():
+    return [x.email for x in CCEmail.objects.filter(active=True)]
+
+def get_bcc_emails():
+    return [x.email for x in BCCEmail.objects.filter(active=True)]
 
 # https://stackoverflow.com/a/4581997
 def get_client_ip(request):
@@ -56,7 +62,8 @@ def send_email(to, addr, pdf, dt_date):
         'address': addr.address,
         'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S")
     }
-    email.bcc = [settings.REQUEST_BCC]
+    email.bcc = get_bcc_emails()
+    email.cc = get_cc_emails()
     email.body = render_to_string('download/email/quote.txt', context)
     email.attach_alternative(render_to_string('download/email/quote.html', context), 'text/html')
     with open(str(pdf.upload_file), 'rb') as f:

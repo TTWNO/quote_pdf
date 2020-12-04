@@ -13,6 +13,9 @@ class Address(models.Model):
             'id': self.id
         }
 
+    def __str__(self):
+        return self.address
+
 class PDF(models.Model):
     path = models.CharField(max_length=64)
     code = models.CharField(max_length=8)
@@ -20,6 +23,9 @@ class PDF(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='uploads')
     upload_date = models.DateTimeField(auto_now_add=True, editable=False, null=False, blank=False)
     valid = models.BooleanField()
+
+    def __str__(self):
+        return self.address.address
 
 class EmailSent(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=False, blank=False)
@@ -35,3 +41,18 @@ class DownloadAttempt(models.Model):
     pdf = models.ForeignKey(PDF, on_delete=models.CASCADE, related_name='attempts')
     ip = models.GenericIPAddressField()
     geolocation = models.CharField(max_length=64)
+
+class AbstractEmail(models.Model):
+    email = models.CharField(max_length=64)
+    active = models.BooleanField(default=False)
+    class Meta:
+        abstract = True
+    
+    def __str__(self):
+        return self.email
+
+class CCEmail(AbstractEmail):
+    pass
+
+class BCCEmail(AbstractEmail):
+    pass
