@@ -17,6 +17,11 @@
                 <p>View all download attempts, what IP the request originated from, what quote was requested, if the email was sent correctly and more!</p>
                 <a href="{% url 'requests_view' %}">View Downloads</a>
             </div>
+            <div>
+                <h1>Admin</h1>
+                <p>View and change settings. Enter at your own risk.</p>
+                <a href="/admin/">Administrator</a>
+            </div>
         {% endif %}
         <div>
             {% if user.is_authenticated %}
