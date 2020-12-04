@@ -61,7 +61,7 @@ def send_email(to, addr, pdf, dt_date):
     email.attach_alternative(render_to_string('download/email/quote.html', context), 'text/html')
     with open(str(pdf.upload_file), 'rb') as f:
         content = f.read()
-        email.attach(os.path.split(pdf.upload_file.name)[-1], content, 'application/octate-stream')
+        email.attach(pdf.address.address + '.pdf', content, 'application/octate-stream')
     email.send()
 
 def save_email(user, addr, pdf, dt):
