@@ -10,6 +10,7 @@ import ipinfo
 import json
 import datetime
 import hashlib
+import os
 
 IPINFO_HANDLER = ipinfo.getHandler()
 
@@ -55,11 +56,12 @@ def send_email(to, addr, pdf, dt_date):
         'address': addr.address,
         'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S")
     }
+    email.bcc = [settings.REQUEST_BCC]
     email.body = render_to_string('download/email/quote.txt', context)
     email.attach_alternative(render_to_string('download/email/quote.html', context), 'text/html')
     with open(str(pdf.upload_file), 'rb') as f:
         content = f.read()
-        email.attach(str(pdf.upload_file), content, 'application/octate-stream')
+        email.attach(os.path.split(pdf.upload_file.name)[-1], content, 'application/octate-stream')
     email.send()
 
 def save_email(user, addr, pdf, dt):
@@ -97,7 +99,6 @@ def download(request, addrid):
                     ip.country
                 )
             )
-            # TODO: If same address + different code, the old file is still visible if the old code is still known
             pdf = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
             if len(pdf) == 0:
                 return render(request, 'common/password-incorrect.html')
@@ -108,7 +109,8 @@ def download(request, addrid):
             dt_date = datetime.datetime.now()
             try:
                 send_email(form.cleaned_data['email'], addr, pdf, dt_date)
-            except:
+            except Exception as e:
+                print(e)
                 return render(request, 'download/email-not-sent.html', {
                     'id': addrid,
                     'code': form.cleaned_data['code']
