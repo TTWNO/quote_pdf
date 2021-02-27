@@ -50,7 +50,8 @@ def upload(request):
                             path=name,
                             code=code,
                             upload_file=pdf_file,
-                            address=possible_match[0]
+                            address=possible_match[0],
+                            valid=True
                         )
                         pdf.save()
                     else: 
@@ -64,7 +65,8 @@ def upload(request):
                                 path=name,
                                 code=code,
                                 upload_file=pdf_file,
-                                address=addr
+                                address=addr,
+                                valid=True
                         )
                         addr.save()
                         pdf.save()
