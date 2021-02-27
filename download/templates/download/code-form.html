@@ -1,9 +1,37 @@
 {% extends 'common/master.html' %}
 {% block body %}
 <h1>Type In Your Code</h1>
-<form action="{% url 'download_f' id %}" method="POST">
+<form action="{% url 'download' %}" method="POST">
   {% csrf_token %}
   {{ form.as_p }}
   <input type="submit" value="Submit">
 </form>
+<div id="addrlist"></div>
+  <script>
+    const ADDR_BOX = document.getElementById('id_address');
+    const SEARCH_URL = '/download/search/';
+    const ADDR_LIST = document.getElementById('addrlist');
+    ADDR_BOX.oninput = async (e) => {
+      const ADDR_INPUT = e.target.value;
+      console.log(e.target.value);
+
+      let response = await fetch(SEARCH_URL + ADDR_INPUT);
+      let addresses = await response.json();
+      console.log(addresses);
+      ADDR_LIST.innerHTML = '';
+      for (address of addresses) {
+        let li = document.createElement('li');
+        let alink = document.createElement('button');
+        alink.innerText = address.address;
+        alink.onclick = function(e) {
+          console.log(e.target.innerText);
+          ADDR_BOX.value = e.target.innerText;
+          ADDR_BOX.readOnly = true;
+        }
+        li.appendChild(alink);
+        ADDR_LIST.appendChild(li);
+      }
+    }
+  </script>
+
 {% endblock %}

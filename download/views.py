@@ -78,12 +78,12 @@ def save_email(user, addr, pdf, dt):
         ref_code=hashlib.sha256(dt.strftime("%Y%m%d%H%M%S").encode()).hexdigest()
     )
 
-def download(request, addrid):
+def download(request):
     if request.method == 'POST':
         form = CodeForm(request.POST)
         if form.is_valid():
             # get addr by id
-            addr = Address.objects.filter(id=addrid)
+            addr = Address.objects.filter(address=form.cleaned_data['address'])
             if len(addr) == 0:
                 return render(request, 'common/not-found.html')
             # only get first addr
@@ -119,7 +119,7 @@ def download(request, addrid):
             except Exception as e:
                 print(e)
                 return render(request, 'download/email-not-sent.html', {
-                    'id': addrid,
+                    'id': addr.id,
                     'code': form.cleaned_data['code']
                 })
             # only saves email if it sent
@@ -131,8 +131,7 @@ def download(request, addrid):
     else:
         form = CodeForm()
         return render(request, 'download/code-form.html', {
-            'form': form,
-            'id': addrid
+            'form': form
         })
 
 def download_preload(request, addid):
