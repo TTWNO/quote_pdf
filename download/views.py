@@ -85,7 +85,7 @@ def download(request):
             # get addr by id
             addr = Address.objects.filter(address=form.cleaned_data['address'])
             if len(addr) == 0:
-                return render(request, 'common/not-found.html')
+                return HttpResponse('{ "status": "ERR", "message": "Address not found."}')
             # only get first addr
             addr = addr[0]
             user, created = QuoteUser.objects.get_or_create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
@@ -108,7 +108,7 @@ def download(request):
             )
             pdf = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
             if len(pdf) == 0:
-                return render(request, 'common/password-incorrect.html')
+                return HttpResponse('{ "status": "ERR", "message": "Incorrect code"}', content_type='application/json')
             pdf = pdf[0]
             dla.code_correct = True
             dla.save()
@@ -118,16 +118,13 @@ def download(request):
                 send_email(form.cleaned_data['email'], addr, pdf, dt_date)
             except Exception as e:
                 print(e)
-                return render(request, 'download/email-not-sent.html', {
-                    'id': addr.id,
-                    'code': form.cleaned_data['code']
-                })
+                return HttpResponse('{ "status": "ERR", "message": "Email failed to send."}', content_type='application/json')
             # only saves email if it sent
             save_email(user, addr, pdf, dt_date)
             # only makes successful if email is sent
             dla.email_sent = True
             dla.save()
-            return render(request, 'download/email-confirm.html')
+            return HttpResponse('{ "status": "OK" }', content_type="application/json")
     else:
         form = CodeForm()
         return render(request, 'download/code-form.html', {
