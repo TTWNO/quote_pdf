@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+    {% if user.is_authenticated %}
+      <link href="{% static 'core/css/logged-in.css' %}" rel="stylesheet">
+    {% endif %}
+  </head>
+  <body>
+    <div id="wrapper">
+      {% block body %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
