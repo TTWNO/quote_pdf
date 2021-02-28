@@ -1,14 +1,45 @@
 {% extends 'common/master.html' %}
 {% block body %}
 <h1>Type In Your Code</h1>
+{{ form.non_field_errors }}
 <form action="{% url 'download' %}" method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
+  <p>
+    <label for="{{ form.address.id_for_label }}" class="sr-only">{{ form.address.label }}</label>
+    <span id="search-wrapper">
+      {{ form.address }}
+      <span id="addrlist"></span>
+    </span>
+  </p>
+  <p>
+    <label for="{{ form.code.id_for_label }}" class="sr-only">{{ form.code.label }}</label>
+    {{ form.code }}
+  </p>
+  <p>
+    <label for="{{ form.email.id_for_label }}" class="sr-only">{{ form.email.label }}</label>
+    {{ form.email }}
+  </p>
   <input type="submit" value="Submit">
 </form>
-<div id="addrlist"></div>
+  <style>
+  #search-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  #addrlist {
+    position: absolute;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+  }
+  #addrlist :hover {
+    background-color: lightgrey;
+  }
+  </style>
   <script>
-    const ADDR_BOX = document.getElementById('id_address');
+    const ADDR_BOX = document.getElementById('{{ form.address.id_for_label }}');
     const SEARCH_URL = '/download/search/';
     const ADDR_LIST = document.getElementById('addrlist');
     ADDR_BOX.oninput = async (e) => {
@@ -21,14 +52,15 @@
       ADDR_LIST.innerHTML = '';
       for (address of addresses) {
         let li = document.createElement('li');
-        let alink = document.createElement('button');
-        alink.innerText = address.address;
-        alink.onclick = function(e) {
+        li.innerText = address.address;
+        li.onclick = function(e) {
           console.log(e.target.innerText);
           ADDR_BOX.value = e.target.innerText;
           ADDR_BOX.readOnly = true;
+          ADDR_LIST.innerHTML = '';
+          // focus on next input box; depends on layout
+          document.getElementById('{{ form.code.id_for_label }}').focus();
         }
-        li.appendChild(alink);
         ADDR_LIST.appendChild(li);
       }
     }
