@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 import ipinfo
 import json
+from datetime import date
 import datetime
 import hashlib
 import os
@@ -106,21 +107,26 @@ def download(request):
                     ip.country
                 )
             )
-            pdf = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
-            if len(pdf) == 0:
+            pdf_quotes = PDF.objects.filter(address=addr, code=form.cleaned_data['code']).order_by('upload_date').reverse()
+            if len(pdf_quotes) == 0:
                 return HttpResponse('{ "status": "ERR", "message": "Incorrect code"}', content_type='application/json')
-            pdf = pdf[0]
+            pdf_quote = pdf_quotes[0]
             dla.code_correct = True
             dla.save()
+            # stop spam; only allow 3 sends in one day
+            today = date.today()
+            today_good_attempts = DownloadAttempt.objects.filter(timestamp__day=today.day, timestamp__month=today.month, timestamp__year=today.year, email_sent=True, pdf__address=addr)
+            if len(today_good_attempts) >= 3:
+                return HttpResponse('{ "status": "ERR", "message": "An email has been sent out for this address 3 times today. Try again tomorrow." }', content_type='application/json');
             # create timestamps
             dt_date = datetime.datetime.now()
             try:
-                send_email(form.cleaned_data['email'], addr, pdf, dt_date)
+                send_email(form.cleaned_data['email'], addr, pdf_quote, dt_date)
             except Exception as e:
                 print(e)
                 return HttpResponse('{ "status": "ERR", "message": "Email failed to send."}', content_type='application/json')
             # only saves email if it sent
-            save_email(user, addr, pdf, dt_date)
+            save_email(user, addr, pdf_quote, dt_date)
             # only makes successful if email is sent
             dla.email_sent = True
             dla.save()
