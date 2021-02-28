@@ -11,6 +11,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #333;
     font-size: 1.1em;
     line-height: 1.5em;
+    font-family: "Myriad Pro";
 }
 .two-col-grid {
     display: grid;
@@ -37,5 +38,22 @@ nav > a {
 }
 
 input {
-    font-size: 32px;
+    font-size: 24px;
+}
+input[type=submit] {
+  background-color: #FFF337;
+  color: blue;
+}
+input[type=submit]:hover {
+  background-color: #61F900;
+  opacity: 0.5;
+}
+
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  top: auto;
+  left: -10000;
+  width: 1px;
+  height: 1px;
 }
