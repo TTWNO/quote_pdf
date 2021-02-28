@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.http import FileResponse
 from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 from .models import Address, PDF, EmailSent, DownloadAttempt, CCEmail, BCCEmail
 from .forms import CodeForm
 from core.models import QuoteUser
@@ -116,8 +117,8 @@ def download(request):
             # stop spam; only allow 3 sends in one day
             today = date.today()
             today_good_attempts = DownloadAttempt.objects.filter(timestamp__day=today.day, timestamp__month=today.month, timestamp__year=today.year, email_sent=True, pdf__address=addr)
-            if len(today_good_attempts) >= 3:
-                return HttpResponse('{ "status": "ERR", "message": "An email has been sent out for this address 3 times today. Try again tomorrow." }', content_type='application/json');
+            if len(today_good_attempts) >= settings.MAX_EMAILS_PER_DAY:
+                return HttpResponse('{ "status": "ERR", "message": "An email has been sent out for this address ' + str(settings.MAX_EMAILS_PER_DAY) + ' times today. Try again tomorrow." }', content_type='application/json');
             # create timestamps
             dt_date = datetime.datetime.now()
             try:

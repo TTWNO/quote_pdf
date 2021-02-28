@@ -77,21 +77,21 @@ WSGI_APPLICATION = 'quote_pdf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'CONN_MAX_AGE': 36000,
-        'OPTIONS': {
-            'read_default_file': '/home/tarf/Documents/code/self-written/web-based/quote-pdf/db.cnf',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'CONN_MAX_AGE': 36000,
+#        'OPTIONS': {
+#            'read_default_file': '/home/tarf/Documents/code/self-written/web-based/quote-pdf/db.cnf',
+#        },
+#    }
+#}
 
 
 # Password validation
@@ -145,3 +145,6 @@ DEFAULT_FROM_EMAIL = 'Test <code@tait.tech>'
 
 REQUEST_BBC = 'Test <spam+bahnrequest@tait.tech>'
 DOWNLOAD_EMAIL = ''
+
+# Custom settings
+MAX_EMAILS_PER_DAY = 3
