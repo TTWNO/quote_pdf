@@ -52,7 +52,7 @@ def search(request, addr):
     if len(addr) <= 3:
         return HttpResponse(json.dumps([]))
     return HttpResponse(json.dumps(
-        [x.toDict() for x in Address.objects.filter(address__contains=addr)[:10]]
+        [x.toDict() for x in Address.objects.filter(address__icontains=addr)[:10]]
     ))
 
 def send_email(to, addr, pdf, dt_date):
