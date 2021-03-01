@@ -1,7 +1,7 @@
 {% extends 'common/plain.html' %}
 {% load static %}
 {% block head %}
-<script src="{% static 'download/js/download.js' %}"></script>
+<script src="{% static 'download/js/download.js' %}" defer></script>
 <link href="{% static 'download/css/download.css' %}" rel="stylesheet">
 {% endblock %}
 {% block body %}
