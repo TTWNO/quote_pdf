@@ -25,6 +25,7 @@ h1 {
 }
 input {
   padding: 5px;
+  border-radius: 10px;
 }
 input[type=submit] {
   border: none;
