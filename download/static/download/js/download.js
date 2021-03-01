@@ -51,7 +51,7 @@ alert( 'Oops! Something went wrong.' );
 } );
 
 // Set up our request
-XHR.open( 'POST', "{% url 'download' %}");
+XHR.open( FORM.getAttribute('method'), FORM.getAttribute('action'));
 XHR.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
 
 // Send our FormData object; HTTP headers are set automatically
