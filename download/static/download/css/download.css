@@ -1,10 +1,20 @@
-input {
-  padding: 2px;
-  font-size: 18px;
+body {
+  background-color: rgba(0, 0, 0, 0.0);
+}
+input[type=text] {
+  padding: 6px;
+  font-size: 12px;
+  width: 150px;
+  text-align: center;
+}
+#wrapper {
+  margin: auto;
+  width: 200px;
 }
 #search-wrapper {
   position: relative;
   display: inline-block;
+  font-size: 8px;
 }
 #addrlist {
   position: absolute;
@@ -20,9 +30,6 @@ input {
 #addrlist li:hover,
 #addrlist li.fake-hover {
   background-color: lightgrey;
-}
-body {
-  background-color: black;
 }
 h1 {
   color: white;
