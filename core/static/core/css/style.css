@@ -9,7 +9,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 80%;
     margin: auto;
     color: #333;
-    font-size: 1.1em;
     line-height: 1.5em;
     font-family: myriad-pro, sans-serif;
     font-style: normal;
@@ -39,9 +38,6 @@ nav > a {
     display: inline-block;
 }
 
-input {
-    font-size: 24px;
-}
 input[type=submit] {
   background-color: #FFF337;
 }
