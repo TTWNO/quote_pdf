@@ -87,7 +87,7 @@ def download(request):
             # get addr by id
             addr = Address.objects.filter(address=form.cleaned_data['address'])
             if len(addr) == 0:
-                return HttpResponse('{ "status": "ERR", "message": "Address not found."}')
+                return HttpResponse('{ "status": "ERR", "message": "Address not found."}', content_type='application/json')
             # only get first addr
             addr = addr[0]
             user, created = QuoteUser.objects.get_or_create(username=form.cleaned_data['email'], email=form.cleaned_data['email'])
