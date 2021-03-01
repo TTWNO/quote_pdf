@@ -1,0 +1,31 @@
+#search-wrapper {
+  position: relative;
+  display: inline-block;
+}
+#addrlist {
+  position: absolute;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+}
+#addrlist li {
+  margin-left: 0px;
+}
+#addrlist li:hover,
+#addrlist li.fake-hover {
+  background-color: lightgrey;
+}
+body {
+  background-color: black;
+}
+h1 {
+  color: white;
+}
+input {
+  padding: 5px;
+}
+input[type=submit] {
+  border: none;
+}
