@@ -1,7 +1,6 @@
 {% extends 'common/plain.html' %}
 {% load static %}
 {% block head %}
-<script src="{% static 'download/js/download.js' %}" defer></script>
 <link href="{% static 'download/css/download.css' %}" rel="stylesheet">
 {% endblock %}
 {% block body %}
@@ -27,4 +26,5 @@
   <div id="statusbox" aria-live="polite" aria-atomic="true"></div>
   <input type="submit" value="Submit">
 </form>
+<script src="{% static 'download/js/download.js' %}" defer></script>
 {% endblock %}
