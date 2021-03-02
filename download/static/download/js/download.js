@@ -103,7 +103,6 @@ ADDR_BOX.oninput = async (e) => {
     li.onclick = function(e) {
       console.log(e.target.innerText);
       ADDR_BOX.value = e.target.innerText;
-      ADDR_BOX.readOnly = true;
       ADDR_LIST.innerHTML = '';
       // focus on next input box; depends on layout
       document.getElementById('id_code').focus();
