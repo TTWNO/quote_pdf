@@ -1,20 +1,28 @@
 body {
   background-color: rgba(0, 0, 0, 0.0);
+  padding: 0px;
+  margin: 0px;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 input[type=text] {
   font-size: 16px;
   text-align: left;
+  width: 100%;
+  margin: auto;
 }
 #wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 90%;
+  margin: 0px;
+  padding: 0px;
 }
 #search-wrapper {
   position: relative;
   display: inline-block;
   font-size: 8px;
+  width: 100%;
 }
 #addrlist {
   position: absolute;
@@ -37,4 +45,7 @@ input {
 }
 input[type=submit] {
   border: none;
+}
+form {
+  width: 100%;
 }
