@@ -58,7 +58,7 @@ def search(request, addr):
 def send_email(to, addr, pdf, dt_date):
     # send email
     email = EmailMultiAlternatives()
-    email.subject = 'Your free quote!'
+    email.subject = settings.QUOTE_SUBJECT
     email.to = [to]
     context = {
         'address': addr.address,
