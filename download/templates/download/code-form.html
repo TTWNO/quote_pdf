@@ -23,7 +23,7 @@
     {{ form.email }}
   </p>
   <div id="statusbox" aria-live="polite" aria-atomic="true"></div>
-  <input type="submit" value="Submit">
+  <input type="submit" value="Submit" aria-live="polite" aria-atomic="true">
 </form>
 <script src="{% static 'download/js/download.js' %}" defer></script>
 {% endblock %}

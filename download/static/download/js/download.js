@@ -37,7 +37,6 @@ XHR.addEventListener( 'load', function( event ) {
 resp = JSON.parse(event.target.response);
 if (resp.status === 'OK') {
   STATUS_BOX.style.color = 'white';
-  STATUS_BOX.innerText = 'Success! Please check your inbox.';
   SUBMIT_BUTTON.value = 'Success!';
 } else {
   STATUS_BOX.innerText = 'Error: ' + resp.message;
