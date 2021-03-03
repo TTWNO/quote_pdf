@@ -29,7 +29,7 @@ const XHR = new XMLHttpRequest(),
 
 // Push our data into our FormData object
 for( name in data ) {
-FD.append( name, data[ name ] );
+  FD.append( name, data[ name ] );
 }
 
 // Define what happens on successful data submission
@@ -91,25 +91,39 @@ ADDR_BOX.oninput = async (e) => {
   console.log(e.target.value);
 
   let response = await fetch(SEARCH_URL + ADDR_INPUT);
-  let addresses = await response.json();
+  var addresses;
+  var has_results = false;
+  try {
+    addresses = await response.json();
+  } catch {
+    addresses = '';
+  }
   console.log(addresses);
   ADDR_LIST.innerHTML = '';
+  ADDR_LIST.style.border = 'none';
   let ul = document.createElement('ul');
   ul.classList.add('semantic');
   for (var i = 0; i < addresses.length; i++) {
-    let address = addresses[i];
+    const address = addresses[i];
+    has_results = true
     let li = document.createElement('li');
     li.innerText = address.address;
     li.onclick = function(e) {
       console.log(e.target.innerText);
       ADDR_BOX.value = e.target.innerText;
       ADDR_LIST.innerHTML = '';
+      ADDR_LIST.style.border = 'none';
       // focus on next input box; depends on layout
       document.getElementById('id_code').focus();
     }
     ul.appendChild(li);
   }
-  ADDR_LIST.appendChild(ul);
+  if (has_results) {
+    ADDR_LIST.appendChild(ul);
+    ADDR_LIST.style.border = '1px solid black';
+  } else {
+    ADDR_LIST.style.border = 'none';
+  }
 }
 FORM.addEventListener('submit', (e) => {
   e.preventDefault();

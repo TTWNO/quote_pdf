@@ -1,7 +1,7 @@
 body {
   background-color: rgba(0, 0, 0, 0.0);
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   height: 100%;
   display: flex;
   align-items: center;
@@ -11,8 +11,8 @@ input[type=text] {
   display: block;
   font-size: 16px;
   text-align: left;
+  padding: 8px;
   width: 100%;
-  margin: auto;
 }
 #wrapper {
   width: 80%;
@@ -21,27 +21,34 @@ input[type=text] {
 }
 #search-wrapper {
   position: relative;
+  padding-right: 16px;
   display: inline-block;
   font-size: 12px;
   width: 100%;
 }
 #addrlist {
+  margin: 0;
   position: absolute;
   z-index: 99;
   top: 100%;
   left: 0;
-  right: 0;
+  width: 100%;
   background-color: white;
 }
 #addrlist li {
   margin-left: 0px;
 }
+#addrlist li:nth-child(odd) {
+  background-color: #ddd;
+}
+#addrlist li:nth-child(even) {
+  background-color: lightblue;
+}
 #addrlist li:hover,
 #addrlist li.fake-hover {
-  background-color: lightgrey;
+  background-color: #FFFC25;
 }
 input {
-  padding: 5px;
   border-radius: 10px;
 }
 input[type=submit] {
