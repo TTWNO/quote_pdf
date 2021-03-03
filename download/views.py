@@ -62,7 +62,8 @@ def send_email(to, addr, pdf, dt_date):
     email.to = [to]
     context = {
         'address': addr.address,
-        'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S")
+        'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S"),
+        'subject': settings.QUOTE_SUBJECT
     }
     email.bcc = get_bcc_emails()
     email.cc = get_cc_emails()
