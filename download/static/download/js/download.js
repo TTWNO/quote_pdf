@@ -36,7 +36,7 @@ for( name in data ) {
 XHR.addEventListener( 'load', function( event ) {
 resp = JSON.parse(event.target.response);
 if (resp.status === 'OK') {
-  STATUS_BOX.style.color = 'white';
+  STATUS_BOX.innerText = '';
   SUBMIT_BUTTON.value = 'Success!';
 } else {
   STATUS_BOX.innerText = 'Error: ' + resp.message;
