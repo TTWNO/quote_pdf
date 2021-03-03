@@ -46,7 +46,7 @@ input[type=text] {
 }
 #addrlist li:hover,
 #addrlist li.fake-hover {
-  background-color: #FFFC25;
+  background-color: #FFF337;
 }
 input {
   border-radius: 10px;
