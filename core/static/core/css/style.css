@@ -38,14 +38,6 @@ nav > a {
     display: inline-block;
 }
 
-input[type=submit] {
-  background-color: #FFF337;
-}
-input[type=submit]:hover {
-  background-color: #61F900;
-  opacity: 0.5;
-}
-
 .sr-only {
   position: absolute;
   overflow: hidden;
