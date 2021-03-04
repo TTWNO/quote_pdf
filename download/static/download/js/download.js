@@ -38,6 +38,7 @@ resp = JSON.parse(event.target.response);
 if (resp.status === 'OK') {
   STATUS_BOX.innerText = '';
   SUBMIT_BUTTON.value = 'Success!';
+  SUBMIT_BUTTON.style.backgroundColor = '#61F900';
 } else {
   STATUS_BOX.innerText = 'Error: ' + resp.message;
   STATUS_BOX.style.color = 'red';

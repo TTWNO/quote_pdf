@@ -63,7 +63,7 @@ input[type=submit] {
   padding: 8px;
 }
 input[type=submit]:hover {
-  background-color: #61F900;
-  opacity: 0.5;
+  background-color: orange;
+  /*background-color: #61F900;*/
 }
 
