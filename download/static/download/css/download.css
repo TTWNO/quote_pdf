@@ -60,6 +60,7 @@ form {
 
 input[type=submit] {
   background-color: #FFF337;
+  padding: 8px;
 }
 input[type=submit]:hover {
   background-color: #61F900;
