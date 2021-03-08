@@ -58,11 +58,11 @@ def search(request, addr):
 def send_email(to, addr, pdf, dt_date):
     # send email
     email = EmailMultiAlternatives()
-    email.subject = settings.QUOTE_SUBJECT
+    # TODO: redefining template
+    email.subject = "You quote for " + addr.address + " is attached"
     email.to = [to]
     context = {
         'address': addr.address,
-        'datetime': dt_date.strftime("%d/%m/%Y %H:%M:%S"),
         'subject': settings.QUOTE_SUBJECT
     }
     email.bcc = get_bcc_emails()
