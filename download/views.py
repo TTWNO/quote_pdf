@@ -65,8 +65,9 @@ def send_email(to, addr, pdf, dt_date):
         'address': addr.address,
         'subject': settings.QUOTE_SUBJECT
     }
-    email.bcc = get_bcc_emails()
-    email.cc = get_cc_emails()
+    # Remove CC/BCC to stop spam catchers.
+    #email.bcc = get_bcc_emails()
+    #email.cc = get_cc_emails()
     email.body = render_to_string('download/email/quote.txt', context)
     email.attach_alternative(render_to_string('download/email/quote.html', context), 'text/html')
     with open(str(pdf.upload_file), 'rb') as f:
