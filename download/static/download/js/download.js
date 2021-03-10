@@ -125,7 +125,11 @@ ADDR_BOX.oninput = async (e) => {
     ADDR_LIST.style.border = 'none';
   }
 }
+const clearFields = () => {
+  FORM.reset();
+}
 FORM.addEventListener('submit', (e) => {
   e.preventDefault();
   sendData();
+  clearFields();
 });
