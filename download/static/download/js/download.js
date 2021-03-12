@@ -21,7 +21,31 @@ if (c.indexOf(name) == 0) {
 }
 return "";
 }
-// form MDN
+const success = () => {
+  clearFields();
+  SUBMIT_BUTTON.style.backgroundColor = '#61F900';
+  SUBMIT_BUTTON.value = 'Success!';
+  STATUS_BOX.innerText = '';
+}
+const fail = (err) => {
+  STATUS_BOX.innerText = err;
+  STATUS_BOX.style.color = 'red';
+  SUBMIT_BUTTON.value = 'Try again.';
+}
+const clearFields = () => {
+  FORM.reset();
+}
+const lockForm = () => {
+  document.querySelectorAll('input[type=text]').forEach((e) => e.disabled = true );
+  SUBMIT_BUTTON.value = 'Waiting...';
+}
+const unlockForm = () => {
+  document.querySelectorAll('input[type=text]').forEach((e) => e.disabled = false );
+  SUBMIT_BUTTON.value = 'Submit';
+}
+
+//
+// from MDN
 
 function sendData( data ) {
 const XHR = new XMLHttpRequest(),
@@ -35,13 +59,11 @@ for( name in data ) {
 // Define what happens on successful data submission
 XHR.addEventListener( 'load', function( event ) {
 resp = JSON.parse(event.target.response);
+unlockForm();
 if (resp.status === 'OK') {
-  STATUS_BOX.innerText = '';
-  SUBMIT_BUTTON.value = 'Success!';
-  SUBMIT_BUTTON.style.backgroundColor = '#61F900';
+  success();
 } else {
-  STATUS_BOX.innerText = 'Error: ' + resp.message;
-  STATUS_BOX.style.color = 'red';
+  fail(resp.message);
 }
 } );
 
@@ -125,11 +147,8 @@ ADDR_BOX.oninput = async (e) => {
     ADDR_LIST.style.border = 'none';
   }
 }
-const clearFields = () => {
-  FORM.reset();
-}
 FORM.addEventListener('submit', (e) => {
   e.preventDefault();
   sendData();
-  clearFields();
+  lockForm();
 });
