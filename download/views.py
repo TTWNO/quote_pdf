@@ -59,7 +59,7 @@ def send_email(to, addr, pdf, dt_date):
     # send email
     email = EmailMultiAlternatives()
     # TODO: redefining template
-    email.subject = "You quote for " + addr.address + " is attached"
+    email.subject = "Your quote for " + addr.address + " is attached"
     email.to = [to]
     context = {
         'address': addr.address,
