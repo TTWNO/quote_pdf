@@ -149,3 +149,4 @@ DOWNLOAD_EMAIL = ''
 # Custom settings
 MAX_EMAILS_PER_DAY = 3
 QUOTE_SUBJECT = 'roofquote.online - Your roof proposal is here!'
+COMPANY_NAME = 'Bahn Projects'
