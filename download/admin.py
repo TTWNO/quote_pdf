@@ -14,6 +14,7 @@ from . import models
 @admin.register(models.PDF)
 class PDFAdmin(admin.ModelAdmin):
     list_display = ['address', 'upload_date']
+    search_fields = ['address', 'upload_date']
 
 @admin.register(models.Address)
 class AddressAdmin(admin.ModelAdmin):
