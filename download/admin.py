@@ -11,9 +11,9 @@ from . import models
 #class CCEmailAdmin(admin.ModelAdmin):
 #    pass
 #
-#@admin.register(models.PDF)
-#class PDFAdmin(admin.ModelAdmin):
-#    list_display = ['address', 'upload_date']
+@admin.register(models.PDF)
+class PDFAdmin(admin.ModelAdmin):
+    list_display = ['address', 'upload_date']
 
 @admin.register(models.Address)
 class AddressAdmin(admin.ModelAdmin):
